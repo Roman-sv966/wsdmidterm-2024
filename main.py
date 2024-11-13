@@ -108,6 +108,10 @@ def display_menu():
     print("Available commands:", ", ".join(command_registry.keys()))
     print("Additional options: save history, load history, clear history, view history")
 
+import statistics
+from decimal import Decimal, InvalidOperation
+import logging
+
 def repl():
     """
     Interactive REPL loop for the calculator using command pattern.
@@ -116,7 +120,7 @@ def repl():
     display_menu()  # Display menu at the start
 
     while True:
-        user_input = input("Enter command (e.g., 'add 5 3' or 'save history'): ").strip()
+        user_input = input("Enter command (e.g., 'mean 1 2 3 4 5' or 'save history'): ").strip()
         logging.info(f"User input received: {user_input}")
 
         if user_input.lower() == 'exit':
@@ -149,13 +153,74 @@ def repl():
             print(history_manager.dataframe)
             continue
         
-        # Process command input as before
+        # Handle command input, splitting by spaces
         parts = user_input.split()
         if len(parts) < 3:
             logging.warning(f"Invalid input format: {user_input}. Expected format: <operation> <num1> <num2>")
             print("Invalid input format. Use: <operation> <num1> <num2>")
             continue
-        operation, num1, num2 = parts[0], parts[1], parts[2]
+        
+        operation = parts[0]
+        # For 'mean', 'stddev', and 'mode', we want to accept any number of arguments
+        if operation.lower() == 'mean':
+            try:
+                numbers = [Decimal(num) for num in parts[1:]]
+                mean_value = sum(numbers) / len(numbers)
+                logging.info(f"Mean of {numbers} is {mean_value}")
+                print(f"The mean of {', '.join(parts[1:])} is {mean_value}")
+                
+                # Save to history
+                record = {"operation": "mean", "numbers": ', '.join(parts[1:]), "result": str(mean_value)}
+                history_manager.add_record(record)
+            except InvalidOperation as e:
+                logging.error(f"Invalid number in input: {e}")
+                print("Invalid number in input.")
+            continue
+        
+        # Handle standard deviation
+        elif operation.lower() == 'stddev':
+            try:
+                numbers = [Decimal(num) for num in parts[1:]]
+                # Calculate standard deviation using statistics library
+                numbers_float = [float(num) for num in numbers]  # Convert Decimal to float for statistics module
+                stddev_value = statistics.stdev(numbers_float)
+                logging.info(f"Standard deviation of {numbers} is {stddev_value}")
+                print(f"The standard deviation of {', '.join(parts[1:])} is {stddev_value}")
+                
+                # Save to history
+                record = {"operation": "stddev", "numbers": ', '.join(parts[1:]), "result": str(stddev_value)}
+                history_manager.add_record(record)
+            except InvalidOperation as e:
+                logging.error(f"Invalid number in input: {e}")
+                print("Invalid number in input.")
+            except statistics.StatisticsError as e:
+                logging.error(f"Error in calculating standard deviation: {e}")
+                print("Standard deviation requires at least two numbers.")
+            continue
+        
+        # Handle mode
+        elif operation.lower() == 'mode':
+            try:
+                numbers = [Decimal(num) for num in parts[1:]]
+                # Calculate mode using statistics library
+                numbers_float = [float(num) for num in numbers]  # Convert Decimal to float for statistics module
+                mode_value = statistics.mode(numbers_float)
+                logging.info(f"Mode of {numbers} is {mode_value}")
+                print(f"The mode of {', '.join(parts[1:])} is {mode_value}")
+                
+                # Save to history
+                record = {"operation": "mode", "numbers": ', '.join(parts[1:]), "result": str(mode_value)}
+                history_manager.add_record(record)
+            except InvalidOperation as e:
+                logging.error(f"Invalid number in input: {e}")
+                print("Invalid number in input.")
+            except statistics.StatisticsError as e:
+                logging.error(f"Error in calculating mode: {e}")
+                print("Mode calculation failed. Ensure there is a mode in the set.")
+            continue
+        
+        # Otherwise handle two-number operations like add, subtract, etc.
+        num1, num2 = parts[1], parts[2]
         logging.info(f"Processing command: {operation} {num1} {num2}")
         perform_calculation_and_display(num1, num2, operation)
 
