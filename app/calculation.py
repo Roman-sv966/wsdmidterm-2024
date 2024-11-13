@@ -1,47 +1,41 @@
-"""
-Calculation Class
-
-The Calculation class encapsulates a mathematical operation between two Decimal numbers 
-using a specified arithmetic function. It provides methods to execute the calculation 
-and to create instances of Calculation.
-"""
-
 from decimal import Decimal
 from typing import Callable
-from app.operations import add, subtract, multiply, divide
+
 
 class Calculation:
     """
     A class that represents a single mathematical calculation.
 
     Attributes:
-        a (Decimal): The first value in the calculation.
-        b (Decimal): The second value in the calculation.
+        num1 (Decimal): The first value in the calculation.
+        num2 (Decimal): The second value in the calculation.
+        result (Decimal): The result of the operation.
         operation (Callable[[Decimal, Decimal], Decimal]): The mathematical function to execute.
 
     Methods:
         operate() -> Decimal:
             Executes the chosen operation on the operands and returns the outcome.
-        
-        create(a: Decimal, b: Decimal, operation: Callable[[Decimal, Decimal], Decimal]) -> 'Calculation':
+
+        create(num1: Decimal, num2: Decimal, operation: Callable[[Decimal, Decimal], Decimal]) -> 'Calculation':
             Static method that initializes a new Calculation instance.
-        
-        __strrepr__() -> str:
+
+        __repr__() -> str:
             Provides a string representation of the Calculation instance for easy readability.
     """
 
-    def __init__(self, a: Decimal, b: Decimal, operation: Callable[[Decimal, Decimal], Decimal]):
+    def __init__(self, num1: Decimal, num2: Decimal, operation: Callable[[Decimal, Decimal], Decimal]):
         """
         Set up a Calculation instance with two values and a specified operation.
 
         Args:
-            a (Decimal): The first number.
-            b (Decimal): The second number.
+            num1 (Decimal): The first number.
+            num2 (Decimal): The second number.
             operation (Callable[[Decimal, Decimal], Decimal]): The arithmetic function to apply.
         """
-        self.a = a
-        self.b = b
+        self.num1 = num1
+        self.num2 = num2
         self.operation = operation
+        self.result = self.operate()  # Automatically calculate the result upon instantiation
 
     def operate(self) -> Decimal:
         """
@@ -50,22 +44,22 @@ class Calculation:
         Returns:
             Decimal: The result produced by the operation.
         """
-        return self.operation(self.a, self.b)
+        return self.operation(self.num1, self.num2)
 
     @staticmethod
-    def create(a: Decimal, b: Decimal, operation: Callable[[Decimal, Decimal], Decimal]) -> 'Calculation':
+    def create(num1: Decimal, num2: Decimal, operation: Callable[[Decimal, Decimal], Decimal]) -> 'Calculation':
         """
         Initialize a new Calculation object.
 
         Args:
-            a (Decimal): The first number.
-            b (Decimal): The second number.
+            num1 (Decimal): The first number.
+            num2 (Decimal): The second number.
             operation (Callable[[Decimal, Decimal], Decimal]): The arithmetic function to apply.
 
         Returns:
             Calculation: A newly created Calculation instance.
         """
-        return Calculation(a, b, operation)
+        return Calculation(num1, num2, operation)
 
     def __strrepr__(self) -> str:
         """
@@ -74,4 +68,4 @@ class Calculation:
         Returns:
             str: A descriptive string of the Calculation instance.
         """
-        return f"Calculation({self.a}, {self.b}, {self.operation.__name__})"
+        return f"Calculation({self.num1}, {self.num2}, {self.operation.__name__}, {self.result})"

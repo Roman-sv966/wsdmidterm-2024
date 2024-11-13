@@ -1,16 +1,10 @@
-"""
-Calculator Module
-
-This module provides a simple calculator with basic arithmetic functions such as addition, 
-subtraction, multiplication, and division. It uses the Decimal class to ensure accurate numerical 
-computations and stores each result for possible future reference.
-"""
+from decimal import Decimal
+from typing import Callable
 
 from app.operations import add, subtract, divide, multiply
 from app.calculation import Calculation
 from app.calculations import Calculations
-from decimal import Decimal
-from typing import Callable
+
 
 class Calculator:
     """
@@ -22,13 +16,13 @@ class Calculator:
 
         add(a: Decimal, b: Decimal) -> Decimal:
             Calculates the sum of two Decimal values.
-        
+
         subtract(a: Decimal, b: Decimal) -> Decimal:
             Computes the difference between two Decimal values.
-        
+
         multiply(a: Decimal, b: Decimal) -> Decimal:
             Determines the product of two Decimal values.
-        
+
         divide(a: Decimal, b: Decimal) -> Decimal:
             Finds the quotient when one Decimal value is divided by another.
     """
@@ -48,65 +42,26 @@ class Calculator:
         """
         # Create and log the calculation
         calculation = Calculation.create(a, b, operation)
-        calculations.add_calculation(calculation)
+        Calculations.add_calculation(calculation)
         # Run the operation and return the output
         return calculation.operate()
 
     @staticmethod
     def add(a: Decimal, b: Decimal) -> Decimal:
-        """
-        Calculate the sum of two Decimal numbers.
-
-        Args:
-            a (Decimal): The first number.
-            b (Decimal): The second number.
-
-        Returns:
-            Decimal: The result of adding a and b.
-        """
+        """Calculate the sum of two Decimal numbers."""
         return Calculator.perform(a, b, add)
 
     @staticmethod
     def subtract(a: Decimal, b: Decimal) -> Decimal:
-        """
-        Calculate the difference between two Decimal numbers.
-
-        Args:
-            a (Decimal): The number to subtract from.
-            b (Decimal): The number to be subtracted.
-
-        Returns:
-            Decimal: The result of a minus b.
-        """
+        """Calculate the difference between two Decimal numbers."""
         return Calculator.perform(a, b, subtract)
 
     @staticmethod
     def multiply(a: Decimal, b: Decimal) -> Decimal:
-        """
-        Calculate the product of two Decimal numbers.
-
-        Args:
-            a (Decimal): The first number.
-            b (Decimal): The second number.
-
-        Returns:
-            Decimal: The result of a times b.
-        """
+        """Calculate the product of two Decimal numbers."""
         return Calculator.perform(a, b, multiply)
 
     @staticmethod
     def divide(a: Decimal, b: Decimal) -> Decimal:
-        """
-        Divide one Decimal number by another.
-
-        Args:
-            a (Decimal): The number to be divided.
-            b (Decimal): The divisor.
-
-        Returns:
-            Decimal: The result of a divided by b.
-        
-        Raises:
-            ZeroDivisionError: If b is zero, to prevent division by zero.
-        """
+        """Divide one Decimal number by another."""
         return Calculator.perform(a, b, divide)

@@ -4,6 +4,7 @@ from decimal import Decimal
 import os
 import pandas as pd
 
+
 class Calculations:
     """
     A class to track and manage a history of calculations using Pandas for flexible data handling.
