@@ -12,38 +12,39 @@ from app.command_registry import register_command
 
 class MeanCommand(Command):
     """
-    Command for calculating the arithmetic mean (average) of two decimal numbers.
+    Command for calculating the arithmetic mean (average) of multiple decimal numbers.
 
     This class inherits from the Command base class and implements the execute method 
-    to return the result of calculating the mean of two numbers (a + b) / 2.
+    to return the result of calculating the mean of the provided numbers.
 
     Attributes:
-        a (Decimal): The first number in the pair.
-        b (Decimal): The second number in the pair.
+        numbers (list of Decimal): The list of numbers for which the mean is calculated.
     """
 
-    def __init__(self, a: Decimal, b: Decimal):
+    def __init__(self, *numbers: Decimal):
         """
-        Initializes the MeanCommand with two decimal numbers.
+        Initializes the MeanCommand with multiple decimal numbers.
 
         Args:
-            a (Decimal): The first number for which the mean is calculated.
-            b (Decimal): The second number for which the mean is calculated.
+            numbers (Decimal): One or more decimal numbers for which the mean is calculated.
         """
-        self.a = a
-        self.b = b
+        self.numbers = numbers
 
     def execute(self) -> Decimal:
         """
-        Executes the calculation of the arithmetic mean of two decimal numbers.
+        Executes the calculation of the arithmetic mean of the provided decimal numbers.
 
-        The mean is calculated by adding the two numbers and dividing the result by 2.
+        The mean is calculated by summing all numbers and dividing the result by the count of numbers.
 
         Returns:
-            Decimal: The mean of the two numbers (a + b) / 2.
+            Decimal: The mean of the provided numbers.
         """
-        return (self.a + self.b) / 2
+        if not self.numbers:
+            raise ValueError("At least one number must be provided.")
+        total = sum(self.numbers)
+        return total / len(self.numbers)
 
 
 # Register the MeanCommand in the global command registry with the name 'mean'
 register_command("mean", MeanCommand)
+
